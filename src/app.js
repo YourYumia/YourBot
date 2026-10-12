@@ -15,22 +15,35 @@ const {
     MessageFlags
 } = require('discord.js');
 
+const commandsPath = path.join(__dirname, 'commands');
+
+function getCommandFiles(directory) {
+    return fs.readdirSync(directory, { withFileTypes: true }).flatMap(entry => {
+        const entryPath = path.join(directory, entry.name);
+
+        if (entry.isDirectory()) {
+            return getCommandFiles(entryPath);
+        }
+
+        return entry.isFile() && entry.name.endsWith('.js')
+            ? [entryPath]
+            : [];
+    });
+}
 
 async function deployCommands() {
     try {
         const commands = [];
 
-        const commandFiles = fs.readdirSync(
-            path.join(__dirname, 'commands')
-        ).filter(file => file.endsWith('.js'));
+        const commandFiles = getCommandFiles(commandsPath);
 
-        for (const file of commandFiles) {
-            const command = require(`./commands/${file}`);
+        for (const filePath of commandFiles) {
+            const command = require(filePath);
             if ('data' in command && 'execute' in command) {
                 commands.push(command.data.toJSON());
             } else {
                 console.log(
-                    `WARNING: The command at ${file} is missing a required data/execute property!`
+                    `WARNING: The command at ${filePath} is missing a required data/execute property!`
                 );
             }
         }
@@ -71,13 +84,10 @@ const client = new Client({
 // unordered list of unique 'command' items
 client.commands = new Collection();
 
-// locate and log each .js module in commands dir
-const commandsPath = path.join(__dirname, 'commands'); // [current dir]/commands
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+const commandFiles = getCommandFiles(commandsPath);
 
 // register each command in the commands directory
-for(const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
+for (const filePath of commandFiles) {
     const command = require(filePath);
 
     if ('data' in command && 'execute' in command) {
