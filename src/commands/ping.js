@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, Colors } = require('discord.js');
 
 
 
@@ -7,14 +7,41 @@ module.exports =  {
         .setName('ping')
         .setDescription('Replies with pong and latency information!'),
     
-    async execute(interaction) {
-        const sent = await interaction.reply({
-            content: 'Pinging...', fetchReply: true
-        });
+    async execute(client, interaction) {
+        const roleColor = interaction.inGuild()
+            ? interaction.member.roles.color?.color ?? Colors.Blurple
+            : Colors.Blurple;
+
+        const initEmbed = new EmbedBuilder()
+            .setAuthor({
+                name: interaction.user.username,
+                iconURL: interaction.user.displayAvatarURL()
+            })
+            .setColor(roleColor)
+            .setTitle('Pinging...')
+            .setTimestamp();
+
+        await interaction.reply({ content: null, embeds: [initEmbed] });
+        const sent = await interaction.fetchReply();
         const pingTime = sent.createdTimestamp - interaction.createdTimestamp;
 
-        await interaction.editReply(
-            `Pong 🏓 Latency: ${pingTime}ms (API: ${Math.round(interaction.client.ws.ping)}ms)`
-        );
+        const embed = new EmbedBuilder()
+            .setAuthor({
+                name: interaction.user.username,
+                iconURL: interaction.user.displayAvatarURL()
+            })
+            .setColor(roleColor)
+            .setTitle('Pong 🏓')
+            .addFields(
+                { name: 'Latency', value: `${pingTime}ms`, inline: true },
+                {
+                    name: 'API latency',
+                    value: `${Math.round(interaction.client.ws.ping)}ms`,
+                    inline: true
+                }
+            )
+            .setTimestamp();
+
+        await interaction.editReply({ content: null, embeds: [embed] });
     },
 };

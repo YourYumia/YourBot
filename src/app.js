@@ -11,7 +11,8 @@ const {
     Collection,
     ActivityType,
     PresenceUpdateStatus,
-    Events 
+    Events,
+    MessageFlags
 } = require('discord.js');
 
 
@@ -130,7 +131,7 @@ client.once(Events.ClientReady, async () => {
 
 
 
-client.on(Events.InteractionCreate, async interaction => {
+client.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
@@ -138,25 +139,25 @@ client.on(Events.InteractionCreate, async interaction => {
     if (!command) {
         await interaction.reply({
             content: 'This command is unavailable. Please try again later.',
-            ephemeral: true
+            flags: MessageFlags.Ephemeral
         });
         return;
     }
 
     try {
-        await command.execute(interaction);
+        await command.execute(client, interaction);
     } catch (error) {
         console.error(error);
         if (interaction.replied || interaction.deferred) {
             // error message only visible to user that triggered the command
             await interaction.followUp({
                 content: 'There was an error while executing this command!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         } else {
             await interaction.reply({
                 content: 'There was an error while executing this command!',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             })
         }
     }
