@@ -1,0 +1,17 @@
+{
+  "name": "yourbot",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cls && node src/app.js"
+  },
+  "keywords": [],
+  "author": "your.yumia",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "discord.js": "^14.27.0",
+    "dotenv": "^18.0.7"
+  }
+}
