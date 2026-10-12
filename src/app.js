@@ -130,13 +130,16 @@ client.once(Events.ClientReady, async () => {
 
 
 
-client.on(Event.InteractionCreate, async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
 
     if (!command) {
-        // console.error(`No command matching name '${interaction.commandName}'`);
+        await interaction.reply({
+            content: 'This command is unavailable. Please try again later.',
+            ephemeral: true
+        });
         return;
     }
 
