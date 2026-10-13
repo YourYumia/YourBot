@@ -43,9 +43,9 @@ module.exports =  {
                     
                     const fieldArr = [];
                     for (const m of MISSIONS) {
-                        const NODE = m.isHard ? `Steel Path ${m.node}` : m.node;
+                        const NODE = m.isHard ? `Steel Path ${m.missionType} ${m.node}` :`${m.missionType} ${m.node}`;
                         const EXPIRY = fixExpiry(m.expiry);
-                        fieldArr.push({ name: NODE, value: EXPIRY, inline: true });
+                        fieldArr.push({ name: NODE, value: EXPIRY, inline: false });
                     }
 
                     const embed = new EmbedBuilder()

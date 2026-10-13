@@ -9,6 +9,7 @@ __pycache__/
 # Personal files
 PROJECT_NOTES.md
 your.bot.code-workspace
+private
 
 # Distribution / packaging
 node_modules
