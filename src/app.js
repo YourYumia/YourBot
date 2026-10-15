@@ -37,9 +37,14 @@ async function deployCommands() {
 
         const commandFiles = getCommandFiles(commandsPath);
 
+        console.log('\nDetected commands:')
+
         for (const filePath of commandFiles) {
             const command = require(filePath);
             if ('data' in command && 'execute' in command) {
+                const dirName = filePath.split('\\')[(filePath.split('\\').length)-2].replace('\\', '');
+                const fileName = filePath.split('\\')[(filePath.split('\\').length)-1].replace('.js', '');
+                console.log(`• ${dirName} - ${fileName}`);
                 commands.push(command.data.toJSON());
             } else {
                 console.log(
@@ -50,16 +55,16 @@ async function deployCommands() {
 
         const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 
-        console.log(`Started refreshing for ${commands.length} application slash commands globally`);
+        console.log(`\nStarted refreshing for ${commands.length} application slash commands globally`);
 
         const data = await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID),
             { body: commands },
         );
 
-        console.log('Sccessfully reloaded all commands!');
+        console.log('\nSuccessfully reloaded all commands!');
     } catch (error) {
-        console.error('Error deploying commands:', error);
+        console.error('\nError deploying commands:', error);
     }
 }
 
@@ -93,16 +98,16 @@ for (const filePath of commandFiles) {
     if ('data' in command && 'execute' in command) {
         client.commands.set(command.data.name, command);
     } else {
-        console.log(`The command ${filePath} is missing a required 'data' or 'execute' property!`);
+        console.log(`\nThe command ${filePath} is missing a required 'data' or 'execute' property!`);
     }
 }
 
 
 
 client.once(Events.ClientReady, async () => {
-    console.log(`${client.user.tag} is ready!`);
+    console.log(`\n${client.user.tag} is ready!`);
     await deployCommands();
-    console.log(`Commands deployed globally!`);
+    console.log(`\nCommands deployed globally!`);
 
     const statusType = process.env.BOT_STATUS || 'online';
     const activityType = process.env.ACTIVITY_TYPE || 'PLAYING';
@@ -134,7 +139,7 @@ client.once(Events.ClientReady, async () => {
      });
 
      console.log(
-        `${client.user.tag} status is '${statusType}'\n`+
+        `\n${client.user.tag} status is '${statusType}'\n`+
         `${client.user.tag} activity set to ${activityType} ${activityName}`
     );
 });
