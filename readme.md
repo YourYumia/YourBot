@@ -9,4 +9,4 @@ Currently, the bot lacks any meaningful features but will operate via slash comm
 - **/sendembed**: Replies with a user defined embed!
 - **/ping**: Replies with pong and latency information!
 ### Warframe
-- **/goodfissures**: Replies with active survival and void-cascade omnia fissures (Warframe)!
+- **/warframe**: Replies with active specified Warframe world-state info!
